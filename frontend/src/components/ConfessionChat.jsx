@@ -242,7 +242,7 @@ function Message({ msg }) {
             className="reveal-line mt-4 pt-3 border-t border-gold-500/20"
             style={{ animationDelay: `${paragraphs.length * 0.5 + 0.2}s` }}
           >
-            <p className="font-display text-gold-300 text-base sm:text-lg italic tracking-wider text-center">
+            <p className="font-script text-gold-300 gold-text-glow text-[1.7rem] sm:text-[2rem] leading-none text-center" style={{ WebkitTextFillColor: 'unset' }}>
               {ABSOLUTION}
             </p>
           </div>
@@ -277,24 +277,38 @@ function Message({ msg }) {
 
 function CurIAEmblem({ small = false }) {
   const size = small ? 36 : 44
+  const pad = size * 0.15
   return (
     <div
-      className="relative shrink-0 rounded-full flex items-center justify-center"
+      className="relative shrink-0 flex items-center justify-center"
       style={{
-        width: size, height: size,
-        background: 'radial-gradient(circle at 50% 35%, rgba(228,198,130,0.25) 0%, rgba(28,18,8,0.9) 70%)',
-        border: '1px solid rgba(201,168,76,0.35)',
-        boxShadow: '0 0 18px -4px rgba(228,198,130,0.4), inset 0 0 12px rgba(0,0,0,0.6)',
+        width: size, height: size * 1.1,
+        background: 'radial-gradient(ellipse at 50% 35%, rgba(228,198,130,0.22) 0%, rgba(14,9,5,0.92) 75%)',
+        border: '1px solid rgba(201,168,76,0.38)',
+        borderRadius: `${size * 0.38}px ${size * 0.38}px ${size * 0.18}px ${size * 0.18}px`,
+        boxShadow: '0 0 18px -4px rgba(228,198,130,0.45), inset 0 0 10px rgba(0,0,0,0.55)',
       }}
     >
-      <svg viewBox="0 0 24 24" width={size * 0.55} height={size * 0.55} aria-hidden="true">
+      <svg
+        viewBox="0 0 80 96"
+        width={size * 0.62}
+        height={size * 0.62 * 1.2}
+        aria-hidden="true"
+      >
         <defs>
-          <linearGradient id="emblemCross" x1="0" y1="0" x2="0" y2="1">
+          <linearGradient id={`cg-${size}`} x1="0" y1="0" x2="0" y2="1">
             <stop offset="0%" stopColor="#efe1b1" />
             <stop offset="100%" stopColor="#a88a3c" />
           </linearGradient>
         </defs>
-        <path d="M12 4 V20 M7 9 H17" stroke="url(#emblemCross)" strokeWidth="1.7" strokeLinecap="round" />
+        <path
+          d="M 14 84 L 14 47 Q 14 12 40 12 Q 66 12 66 47 L 66 84 Z"
+          fill="none"
+          stroke={`url(#cg-${size})`}
+          strokeWidth="2"
+        />
+        <path d="M 40 26 V 70 M 29 46 H 51" stroke="#e2cc8b" strokeWidth="2.2" strokeLinecap="round" />
+        <line x1="10" y1="84" x2="70" y2="84" stroke="rgba(201,168,76,0.5)" strokeWidth="1" strokeLinecap="round" />
       </svg>
     </div>
   )

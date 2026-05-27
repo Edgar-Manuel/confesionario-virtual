@@ -120,7 +120,7 @@ export default function AbsolutionOverlay({ open, onClose }) {
               animate={{ scale: 1, opacity: 1, filter: 'blur(0px)' }}
               transition={{ duration: 1.4, delay: 1.2, ease: [0.22, 0.7, 0.31, 1] }}
             >
-              <p className="font-display gold-text gold-text-glow text-[clamp(2.2rem,7vw,5rem)] leading-tight tracking-wider">
+              <p className="font-script gold-text gold-text-glow text-[clamp(3rem,9vw,7rem)] leading-none">
                 Ego te absolvo
               </p>
             </motion.div>

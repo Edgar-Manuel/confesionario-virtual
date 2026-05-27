@@ -63,11 +63,13 @@ export default function WelcomeScreen({ onEnter, history }) {
         </motion.div>
 
         <motion.div
-          initial={{ scaleX: 0, opacity: 0 }}
-          animate={{ scaleX: 1, opacity: 1 }}
+          initial={{ opacity: 0, scaleX: 0 }}
+          animate={{ opacity: 1, scaleX: 1 }}
           transition={{ duration: 1.4, delay: 0.9, ease: 'easeOut' }}
-          className="h-px w-40 bg-gradient-to-r from-transparent via-gold-500/60 to-transparent origin-center"
-        />
+          className="ornamental-divider origin-center"
+        >
+          <span>✦</span>
+        </motion.div>
 
         <motion.div
           initial={{ opacity: 0, y: 8 }}
@@ -251,21 +253,44 @@ function Dust() {
 
 function SacredEmblem() {
   return (
-    <svg viewBox="0 0 80 80" width="76" height="76" aria-hidden="true">
+    <svg viewBox="0 0 80 96" width="64" height="76" aria-hidden="true">
       <defs>
-        <radialGradient id="emblemHalo" cx="50%" cy="50%" r="50%">
-          <stop offset="0%" stopColor="#efe1b1" stopOpacity="0.7" />
-          <stop offset="60%" stopColor="#c9a84c" stopOpacity="0.18" />
+        <radialGradient id="archHalo" cx="50%" cy="45%" r="55%">
+          <stop offset="0%" stopColor="#efe1b1" stopOpacity="0.18" />
           <stop offset="100%" stopColor="#c9a84c" stopOpacity="0" />
         </radialGradient>
-        <linearGradient id="crossGrad" x1="0" y1="0" x2="0" y2="1">
+        <linearGradient id="archGrad" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor="#e2cc8b" stopOpacity="0.9" />
+          <stop offset="100%" stopColor="#8a7232" stopOpacity="0.7" />
+        </linearGradient>
+        <linearGradient id="crossG" x1="0" y1="0" x2="0" y2="1">
           <stop offset="0%" stopColor="#efe1b1" />
-          <stop offset="100%" stopColor="#a88a3c" />
+          <stop offset="100%" stopColor="#c9a84c" />
         </linearGradient>
       </defs>
-      <circle cx="40" cy="40" r="36" fill="url(#emblemHalo)" />
-      <circle cx="40" cy="40" r="28" fill="none" stroke="rgba(228,198,130,0.45)" strokeWidth="0.6" />
-      <path d="M 40 18 V 60 M 28 30 H 52" stroke="url(#crossGrad)" strokeWidth="2.6" strokeLinecap="round" />
+      {/* Halo glow behind arch */}
+      <ellipse cx="40" cy="48" rx="32" ry="40" fill="url(#archHalo)" />
+      {/* Gothic pointed arch */}
+      <path
+        d="M 12 84 L 12 46 Q 12 10 40 10 Q 68 10 68 46 L 68 84 Z"
+        fill="none"
+        stroke="url(#archGrad)"
+        strokeWidth="1.4"
+        strokeLinejoin="round"
+      />
+      {/* Inner decorative arch */}
+      <path
+        d="M 19 82 L 19 48 Q 19 18 40 18 Q 61 18 61 48 L 61 82"
+        fill="none"
+        stroke="rgba(228,198,130,0.3)"
+        strokeWidth="0.5"
+      />
+      {/* Cross inside arch */}
+      <path d="M 40 28 V 70 M 28 46 H 52" stroke="url(#crossG)" strokeWidth="2.4" strokeLinecap="round" />
+      {/* Base line */}
+      <line x1="8" y1="84" x2="72" y2="84" stroke="rgba(201,168,76,0.55)" strokeWidth="0.8" strokeLinecap="round" />
+      {/* Keystone diamond at apex */}
+      <rect x="37.5" y="7.5" width="5" height="5" rx="0.5" fill="rgba(228,198,130,0.7)" transform="rotate(45 40 10)" />
     </svg>
   )
 }

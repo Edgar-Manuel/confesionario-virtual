@@ -45,6 +45,8 @@ button, a, textarea, input, [role="button"] {
    ============================================ */
 .font-serif { font-family: 'Cormorant Garamond', Georgia, serif; }
 .font-display { font-family: 'Cinzel', 'Cormorant Garamond', serif; letter-spacing: 0.08em; }
+.font-script { font-family: 'Grand Vibes', 'Cormorant Garamond', cursive; }
+.font-heading { font-family: 'Playfair Display', 'Cormorant Garamond', serif; }
 
 .gold-text {
   background: linear-gradient(
@@ -69,6 +71,30 @@ button, a, textarea, input, [role="button"] {
 @keyframes goldPulse {
   0%, 100% { filter: drop-shadow(0 0 6px rgba(201, 168, 76, 0.12)); }
   50%      { filter: drop-shadow(0 0 22px rgba(201, 168, 76, 0.45)); }
+}
+
+/* ============================================
+   ORNAMENTAL DIVIDER — line ✦ line
+   ============================================ */
+.ornamental-divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  max-width: 320px;
+}
+.ornamental-divider::before,
+.ornamental-divider::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(201, 168, 76, 0.55), transparent);
+}
+.ornamental-divider span {
+  color: rgba(201, 168, 76, 0.7);
+  font-size: 10px;
+  letter-spacing: 0.3em;
+  flex-shrink: 0;
 }
 
 /* ============================================

@@ -40,6 +40,8 @@ export default {
       fontFamily: {
         serif: ['"Cormorant Garamond"', 'Georgia', 'serif'],
         display: ['"Cinzel"', '"Cormorant Garamond"', 'serif'],
+        heading: ['"Playfair Display"', '"Cormorant Garamond"', 'serif'],
+        script: ['"Grand Vibes"', '"Cormorant Garamond"', 'cursive'],
         sans: ['Inter', 'system-ui', 'sans-serif'],
       },
     },
