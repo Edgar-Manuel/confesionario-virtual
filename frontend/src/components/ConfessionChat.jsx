@@ -33,6 +33,12 @@ export default function ConfessionChat({ onLeave, onAbsolved, onShowDashboard, h
   useEffect(() => { scrollToBottom() }, [messages, showEffect, loading, scrollToBottom])
   useEffect(() => { inputRef.current?.focus() }, [])
 
+  // Speak the initial greeting on mount
+  useEffect(() => {
+    setIsSpeaking(true)
+    speak(INITIAL_MESSAGE.content).finally(() => setIsSpeaking(false))
+  }, [])
+
   // Cleanup on unmount
   useEffect(() => {
     return () => {
