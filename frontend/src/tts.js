@@ -22,8 +22,12 @@ export function speak(text) {
   const voiceId = import.meta.env.VITE_ELEVENLABS_VOICE_ID || DEFAULT_VOICE_ID
 
   if (apiKey) {
-    return speakElevenLabs(text, voiceId, apiKey).catch(() => speakNative(text))
+    return speakElevenLabs(text, voiceId, apiKey).catch((err) => {
+      console.error('[tts] ElevenLabs failed, falling back to native:', err?.message || err)
+      return speakNative(text)
+    })
   }
+  console.warn('[tts] VITE_ELEVENLABS_API_KEY not set — using native speech synthesis')
   return speakNative(text)
 }
 
@@ -36,7 +40,7 @@ async function speakElevenLabs(text, voiceId, apiKey) {
     },
     body: JSON.stringify({
       text,
-      model_id: 'eleven_v3',
+      model_id: 'eleven_multilingual_v2',
       voice_settings: {
         stability: 0.72,
         similarity_boost: 0.85,
@@ -46,7 +50,10 @@ async function speakElevenLabs(text, voiceId, apiKey) {
     }),
   })
 
-  if (!res.ok) throw new Error(`ElevenLabs ${res.status}`)
+  if (!res.ok) {
+    const detail = await res.json().catch(() => ({}))
+    throw new Error(`ElevenLabs ${res.status}: ${detail?.detail?.message || res.statusText}`)
+  }
 
   const blob = await res.blob()
   const url = URL.createObjectURL(blob)
