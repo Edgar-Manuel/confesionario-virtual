@@ -11,30 +11,18 @@ const SIN_KEYWORDS = {
   codicia:  ['codicia', 'avaricia', 'robé', 'robo', 'tacaño'],
 };
 
+// Used as fallback when Groq's reply doesn't include a structured penitence
 const PENITENCIAS = [
-  'Apaga el teléfono y pasa una hora en silencio, en compañía de ti mismo.',
-  'Escribe una carta a mano a esa persona a la que le debes una disculpa sincera.',
-  'Regala algo tuyo a alguien que lo necesite sin esperar nada a cambio.',
-  'Lee un salmo y reflexiona sobre su significado en tu vida hoy.',
-  'Sal a caminar sin destino fijo y observa la belleza que te rodea.',
-  'Llama a un familiar con el que no hablas hace tiempo y pregúntale cómo está.',
-  'Haz una donación anónima a una causa que te mueva el corazón.',
-  'Escribe tres cosas por las que estés agradecido hoy.',
-  'Ayuda a un desconocido sin revelar tu identidad.',
-  'Pasa 20 minutos en completa quietud, respirando y dejando ir el rencor.',
-];
-
-const CONSEJOS = [
-  'Todos caemos, hijo mío. Lo importante es levantarse con la mirada en alto y el corazón dispuesto a mejorar.',
-  'El arrepentimiento es el primer paso hacia la libertad. No te aferres a la culpa; transfórmala en aprendizaje.',
-  'La misericordia es infinita para quien la busca con sinceridad. Tu corazón arrepentido ya es parte del camino.',
-  'Reconocer el error ya te hace más sabio que ayer. No te castigues por haber caído, alégrate por querer levantarte.',
-  'Dios no se cansa de perdonar; somos nosotros los que nos cansamos de pedir perdón.',
-  'Cada día es una nueva oportunidad para ser mejor. Hoy has dado el primer paso al reconocer tu falta.',
-  'No hay pecado tan grande que el amor no pueda redimir. Confía en la misericordia que todo lo sana.',
-  'El perdón comienza en uno mismo. Perdónate para poder ser luz para los demás.',
-  'Vivir en verdad es el camino más corto hacia la paz interior. Sigue caminando, no estás solo.',
-  'La humildad de reconocer los propios errores es la puerta a una vida más plena y auténtica.',
+  'apaga el teléfono y pasa una hora en silencio, en compañía de ti mismo',
+  'escribas una carta a mano a esa persona a la que le debes una disculpa sincera',
+  'regales algo tuyo a alguien que lo necesite sin esperar nada a cambio',
+  'leas un salmo y reflexiones sobre su significado en tu vida hoy',
+  'salgas a caminar sin destino fijo y observes la belleza que te rodea',
+  'llames a un familiar con el que no hablas hace tiempo y le preguntes cómo está',
+  'hagas una donación anónima a una causa que te mueva el corazón',
+  'escribas tres cosas por las que estés agradecido hoy',
+  'ayudes a un desconocido sin revelar tu identidad',
+  'pases 20 minutos en completa quietud, respirando y dejando ir el rencor',
 ];
 
 const EFECTOS = [
@@ -67,38 +55,9 @@ function extractPenitencia(reply) {
 async function confess(message) {
   const sins = detectSins(message);
   const efecto = pick(EFECTOS);
-
-  // Try real AI (Groq) if key is configured
-  try {
-    const reply = await askCurIA(message);
-    const penitencia = extractPenitencia(reply) || pick(PENITENCIAS);
-    return { reply, absolucion: true, efecto, sins, penitencia };
-  } catch (e) {
-    console.warn('[api] Groq unavailable, using mock:', e.message);
-  }
-
-  // Fallback: deterministic mock
-  const consejo = pick(CONSEJOS);
-  const penitencia = pick(PENITENCIAS);
-  let reply;
-  if (sins.length) {
-    reply =
-      `Querido hijo, gracias por tu confianza y por abrir tu corazón. He escuchado tus palabras con atención y sin juicio.\n\n` +
-      `${consejo}\n\n` +
-      `Como penitencia, te pido que ${penitencia.toLowerCase()}\n\n` +
-      `Cierra los ojos un momento y respira profundo. Imagina que dejas caer una carga pesada que ya no necesitas llevar.\n\n` +
-      `Ego te absolvo de tus pecados. Ve en paz.`;
-  } else {
-    reply =
-      `Hijo mío, gracias por venir a compartir lo que llevas en tu corazón. A veces el mayor peso no tiene nombre, y aun así nos quema por dentro.\n\n` +
-      `${consejo}\n\n` +
-      `Te invito a reflexionar sobre lo que realmente te preocupa. A veces el mayor pecado es olvidarnos de cuidar nuestra propia paz.\n\n` +
-      `Ego te absolvo de tus pecados. Ve en paz.`;
-  }
-
-  return new Promise(resolve =>
-    setTimeout(() => resolve({ reply, absolucion: true, efecto, sins, penitencia }), 900 + Math.random() * 400)
-  );
+  const reply = await askCurIA(message);
+  const penitencia = extractPenitencia(reply) || pick(PENITENCIAS);
+  return { reply, absolucion: true, efecto, sins, penitencia };
 }
 
 const KEY = 'cv.history';
