@@ -45,7 +45,6 @@ export default function ConfessionChat({ onLeave, onAbsolved, onShowDashboard, h
       api.logConfession({ sins: data.sins, penitencia: data.penitencia })
       setTimeout(() => {
         setAbsolved(true)
-        onAbsolved && onAbsolved()
       }, 2200)
     } catch {
       setMessages(prev => [...prev, {
@@ -200,7 +199,7 @@ export default function ConfessionChat({ onLeave, onAbsolved, onShowDashboard, h
         {absolved && (
           <div className="mt-4 flex justify-center">
             <button
-              onClick={onShowDashboard}
+              onClick={onAbsolved}
               className="font-display text-[11px] tracking-[0.35em] uppercase text-gold-300 hover:text-bone border border-gold-500/40 hover:border-gold-300/70 px-5 py-2.5 rounded-sm transition-all duration-500"
             >
               Ver tu camino espiritual →
