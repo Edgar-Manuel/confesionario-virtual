@@ -152,8 +152,7 @@ export default function ConfessionChat({ onLeave, onAbsolved, onShowDashboard, h
             </svg>
           </button>
           <div className="flex items-center gap-3">
-            {/* Animated priest avatar */}
-            <PriestAvatar isSpeaking={isSpeaking} />
+            <PriestAvatar isSpeaking={isSpeaking} size={44} />
             <div>
               <div className="flex items-center gap-2">
                 <h2 className="font-display text-sm tracking-[0.25em] text-gold-300/90 uppercase">CurIA</h2>
@@ -187,12 +186,18 @@ export default function ConfessionChat({ onLeave, onAbsolved, onShowDashboard, h
       >
         <div className="mx-auto max-w-3xl space-y-7">
           {messages.map((msg, i) => (
-            <Message key={i} msg={msg} />
+            <Message
+              key={i}
+              msg={msg}
+              isSpeaking={isSpeaking && msg.role === 'curia' && i === messages.length - 1}
+            />
           ))}
 
           {loading && (
-            <div className="flex items-end gap-3 reveal-line">
-              <div className="shrink-0 mb-1.5"><CurIAEmblem small /></div>
+            <div className="flex items-end gap-4 reveal-line">
+              <div className="shrink-0 self-end mb-1">
+                <PriestAvatar isSpeaking={false} size={80} />
+              </div>
               <div className="bubble-curia flex items-center gap-4 py-4">
                 <span className="wave" />
                 <span className="font-serif italic text-bone/50 text-sm">CurIA está reflexionando...</span>
@@ -287,129 +292,43 @@ export default function ConfessionChat({ onLeave, onAbsolved, onShowDashboard, h
   )
 }
 
-/* ── Animated Priest Avatar ─────────────────────────────────────────── */
-function PriestAvatar({ isSpeaking }) {
-  // Mouth cycles between slightly open/closed when speaking
-  const mouthPath = isSpeaking
-    ? 'M 34 58 Q 40 63 46 58'   // open
-    : 'M 35 58 Q 40 60 45 58'   // closed/smile
+/* ── Animated Priest Avatar (image-based lip-sync) ────────────────── */
+const MOUTH_FRAMES = [
+  '/avatar/mouth-closed.png',
+  '/avatar/mouth-half.png',
+  '/avatar/mouth-open.png',
+]
+
+function PriestAvatar({ isSpeaking, size = 44 }) {
+  const [frame, setFrame] = useState(0)
+
+  useEffect(() => {
+    if (!isSpeaking) { setFrame(0); return }
+    const id = setInterval(() => {
+      setFrame(f => (f + 1) % MOUTH_FRAMES.length)
+    }, 180)
+    return () => clearInterval(id)
+  }, [isSpeaking])
 
   return (
-    <motion.div
-      className="relative shrink-0"
-      animate={isSpeaking ? { scale: [1, 1.04, 1] } : { scale: 1 }}
-      transition={{ duration: 0.6, repeat: isSpeaking ? Infinity : 0, ease: 'easeInOut' }}
+    <div
+      className="relative shrink-0 rounded-full overflow-hidden border border-gold-500/30"
+      style={{
+        width: size, height: size,
+        boxShadow: isSpeaking
+          ? '0 0 16px -2px rgba(228,198,130,0.5)'
+          : '0 0 10px -3px rgba(228,198,130,0.3)',
+      }}
     >
-      <svg viewBox="0 0 80 96" width="44" height="52" aria-hidden="true">
-        <defs>
-          <radialGradient id="faceGlow" cx="50%" cy="42%" r="48%">
-            <stop offset="0%" stopColor="#efe1b1" stopOpacity="0.22" />
-            <stop offset="100%" stopColor="#c9a84c" stopOpacity="0" />
-          </radialGradient>
-          <linearGradient id="robeGrad" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="#1c1410" />
-            <stop offset="100%" stopColor="#0d0a07" />
-          </linearGradient>
-          <linearGradient id="skinGrad" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="#d4a97a" />
-            <stop offset="100%" stopColor="#b8895a" />
-          </linearGradient>
-          <linearGradient id="archGold" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="#e2cc8b" stopOpacity="0.9" />
-            <stop offset="100%" stopColor="#8a7232" stopOpacity="0.7" />
-          </linearGradient>
-        </defs>
-
-        {/* Gothic arch frame */}
-        <path
-          d="M 6 88 L 6 44 Q 6 6 40 6 Q 74 6 74 44 L 74 88 Z"
-          fill="url(#robeGrad)"
-          stroke="url(#archGold)"
-          strokeWidth="1.3"
-        />
-        {/* Inner arch line */}
-        <path
-          d="M 12 86 L 12 46 Q 12 12 40 12 Q 68 12 68 46 L 68 86"
-          fill="none"
-          stroke="rgba(201,168,76,0.22)"
-          strokeWidth="0.5"
-        />
-
-        {/* Hood/cowl */}
-        <ellipse cx="40" cy="36" rx="22" ry="25" fill="#161210" />
-        <path
-          d="M 18 36 Q 18 14 40 14 Q 62 14 62 36 Q 62 52 40 54 Q 18 52 18 36 Z"
-          fill="#1a1612"
-        />
-
-        {/* Face */}
-        <ellipse cx="40" cy="38" rx="14" ry="16" fill="url(#skinGrad)" />
-
-        {/* Halo glow behind face */}
-        <ellipse cx="40" cy="36" rx="18" ry="20" fill="url(#faceGlow)" />
-
-        {/* Eyes */}
-        <ellipse cx="34" cy="34" rx="2.2" ry="2.5" fill="#2a1a0e" />
-        <ellipse cx="46" cy="34" rx="2.2" ry="2.5" fill="#2a1a0e" />
-        {/* Eye shine */}
-        <circle cx="35" cy="33" r="0.7" fill="rgba(255,255,255,0.5)" />
-        <circle cx="47" cy="33" r="0.7" fill="rgba(255,255,255,0.5)" />
-
-        {/* Eyebrows */}
-        <path d="M 31 30.5 Q 34 29 37 30.5" fill="none" stroke="#5a3a1a" strokeWidth="1" strokeLinecap="round" />
-        <path d="M 43 30.5 Q 46 29 49 30.5" fill="none" stroke="#5a3a1a" strokeWidth="1" strokeLinecap="round" />
-
-        {/* Nose */}
-        <path d="M 39 37 Q 37 41 39 42 Q 41 42 43 41 Q 41 41 39 37 Z" fill="rgba(0,0,0,0.12)" />
-
-        {/* Animated mouth */}
-        <motion.path
-          d={mouthPath}
-          fill="none"
-          stroke="#7a4a2a"
-          strokeWidth="1.4"
-          strokeLinecap="round"
-          animate={{ d: isSpeaking ? [
-            'M 34 58 Q 40 60 46 58',
-            'M 34 57 Q 40 64 46 57',
-            'M 34 58 Q 40 61 46 58',
-            'M 34 57 Q 40 63 46 57',
-            'M 34 58 Q 40 60 46 58',
-          ] : 'M 35 58 Q 40 60 45 58' }}
-          transition={isSpeaking ? {
-            duration: 0.35,
-            repeat: Infinity,
-            ease: 'easeInOut',
-          } : { duration: 0.2 }}
-        />
-
-        {/* Collar */}
-        <path
-          d="M 26 68 Q 40 72 54 68 L 54 76 Q 40 80 26 76 Z"
-          fill="#f5f0e8"
-          opacity="0.85"
-        />
-
-        {/* Cross on chest */}
-        <path d="M 40 76 V 86 M 36 80 H 44" stroke="rgba(201,168,76,0.6)" strokeWidth="1.2" strokeLinecap="round" />
-
-        {/* Base line */}
-        <line x1="4" y1="88" x2="76" y2="88" stroke="rgba(201,168,76,0.45)" strokeWidth="0.7" strokeLinecap="round" />
-      </svg>
-
-      {/* Speaking glow ring */}
-      {isSpeaking && (
-        <motion.div
-          className="absolute inset-0 rounded-full pointer-events-none"
-          style={{
-            background: 'radial-gradient(circle at 50% 45%, rgba(228,198,130,0.18) 0%, transparent 70%)',
-            filter: 'blur(4px)',
-          }}
-          animate={{ opacity: [0.5, 1, 0.5] }}
-          transition={{ duration: 0.8, repeat: Infinity, ease: 'easeInOut' }}
-        />
-      )}
-    </motion.div>
+      <img
+        src={MOUTH_FRAMES[frame]}
+        alt="CurIA"
+        width={size}
+        height={size}
+        className="w-full h-full object-cover"
+        draggable={false}
+      />
+    </div>
   )
 }
 
@@ -459,7 +378,7 @@ function MicButton({ isRecording, disabled, onToggle }) {
 }
 
 /* ── Message rendering ──────────────────────────────────────────────── */
-function Message({ msg }) {
+function Message({ msg, isSpeaking = false }) {
   const isUser = msg.role === 'user'
   const ABSOLUTION = 'Ego te absolvo de tus pecados. Ve en paz.'
 
@@ -500,12 +419,16 @@ function Message({ msg }) {
 
   return (
     <motion.div
-      className={`flex items-end gap-3 ${isUser ? 'justify-end' : 'justify-start'}`}
+      className={`flex items-end gap-4 ${isUser ? 'justify-end' : 'justify-start'}`}
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6, ease: 'easeOut', delay: 0.05 }}
     >
-      {!isUser && <div className="shrink-0 mb-1.5"><CurIAEmblem small /></div>}
+      {!isUser && (
+        <div className="shrink-0 self-end mb-1">
+          <PriestAvatar isSpeaking={isSpeaking} size={80} />
+        </div>
+      )}
       <div className={isUser ? 'bubble-user' : 'bubble-curia'}>
         {isUser ? (
           <p className="text-bone/90 text-[15px] leading-relaxed font-sans whitespace-pre-wrap">{msg.content}</p>
