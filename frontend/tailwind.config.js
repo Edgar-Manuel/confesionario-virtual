@@ -8,6 +8,7 @@ export default {
     extend: {
       colors: {
         wine: {
+          950: '#1a0408',
           900: '#2c0609',
           800: '#4a0e12',
           700: '#6b181e',
@@ -15,41 +16,33 @@ export default {
           500: '#a6262b',
         },
         gold: {
+          700: '#8a7232',
+          600: '#a88a3c',
           500: '#c9a84c',
           400: '#d4b96a',
-          300: '#dfc988',
+          300: '#e2cc8b',
+          200: '#efe1b1',
         },
-        dark: {
+        ink: {
+          990: '#050505',
+          980: '#080808',
           950: '#0a0a0a',
           900: '#121212',
+          850: '#161616',
           800: '#1a1a1a',
+          750: '#1f1f1f',
           700: '#232323',
           600: '#2d2d2d',
           500: '#3a3a3a',
         },
+        bone: '#e8e0d4',
       },
       fontFamily: {
-        serif: ['"Crimson Pro"', 'Georgia', 'serif'],
+        serif: ['"Cormorant Garamond"', 'Georgia', 'serif'],
+        display: ['"Cinzel"', '"Cormorant Garamond"', 'serif'],
+        heading: ['"Playfair Display"', '"Cormorant Garamond"', 'serif'],
+        script: ['"Grand Vibes"', '"Cormorant Garamond"', 'cursive'],
         sans: ['Inter', 'system-ui', 'sans-serif'],
-      },
-      animation: {
-        'fade-in': 'fadeIn 0.8s ease-out forwards',
-        'glow': 'glow 2s ease-in-out infinite alternate',
-        'float': 'float 6s ease-in-out infinite',
-      },
-      keyframes: {
-        fadeIn: {
-          '0%': { opacity: '0', transform: 'translateY(10px)' },
-          '100%': { opacity: '1', transform: 'translateY(0)' },
-        },
-        glow: {
-          '0%': { boxShadow: '0 0 5px rgba(201, 168, 76, 0.2)' },
-          '100%': { boxShadow: '0 0 20px rgba(201, 168, 76, 0.6)' },
-        },
-        float: {
-          '0%, 100%': { transform: 'translateY(0px)' },
-          '50%': { transform: 'translateY(-6px)' },
-        },
       },
     },
   },
