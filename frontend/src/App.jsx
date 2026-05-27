@@ -7,6 +7,7 @@ import WelcomeScreen from './components/WelcomeScreen'
 import ConfessionChat from './components/ConfessionChat'
 import AbsolutionOverlay from './components/AbsolutionOverlay'
 import SpiritualDashboard from './components/SpiritualDashboard'
+import DonationScreen from './components/DonationScreen'
 
 export default function App() {
   const [screen, setScreen] = useState('welcome')
@@ -33,8 +34,10 @@ export default function App() {
 
   const handleOverlayClose = () => {
     setAbsolveOpen(false)
-    setScreen('dashboard')
+    setScreen('donation')
   }
+
+  const handleDonationContinue = () => setScreen('dashboard')
 
   const handleConfessAgain = () => setScreen('chat')
 
@@ -76,6 +79,9 @@ export default function App() {
             onShowDashboard={handleShowDashboard}
             history={history}
           />
+        )}
+        {screen === 'donation' && (
+          <DonationScreen key="donation" onContinue={handleDonationContinue} />
         )}
         {screen === 'dashboard' && (
           <SpiritualDashboard
