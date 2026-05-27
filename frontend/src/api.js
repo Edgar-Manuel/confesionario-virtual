@@ -1,3 +1,5 @@
+import { askCurIA } from './groq'
+
 const SIN_KEYWORDS = {
   ira:      ['ira', 'enojo', 'enojé', 'rabia', 'golpe', 'golpeé', 'insulté', 'odio', 'odié', 'violencia', 'grité'],
   mentira:  ['mentira', 'mentí', 'engaño', 'engañé', 'engañar', 'chisme', 'calumnia', 'blasfemé'],
@@ -54,18 +56,36 @@ function detectSins(text) {
   return [...found];
 }
 
-function confess(message) {
+function extractPenitencia(reply) {
+  const m = reply.match(/Como penitencia[^,]*,?\s*te pido que\s+(.+?)(?:\n|Ego te|$)/i)
+  if (m) return m[1].replace(/\.$/, '').trim()
+  const m2 = reply.match(/Como penitencia[^:]*:\s*(.+?)(?:\n|Ego te|$)/i)
+  if (m2) return m2[1].replace(/\.$/, '').trim()
+  return null
+}
+
+async function confess(message) {
   const sins = detectSins(message);
-  const consejo = pick(CONSEJOS);
-  const penitencia = pick(PENITENCIAS);
   const efecto = pick(EFECTOS);
 
+  // Try real AI (Groq) if key is configured
+  try {
+    const reply = await askCurIA(message);
+    const penitencia = extractPenitencia(reply) || pick(PENITENCIAS);
+    return { reply, absolucion: true, efecto, sins, penitencia };
+  } catch (e) {
+    console.warn('[api] Groq unavailable, using mock:', e.message);
+  }
+
+  // Fallback: deterministic mock
+  const consejo = pick(CONSEJOS);
+  const penitencia = pick(PENITENCIAS);
   let reply;
   if (sins.length) {
     reply =
       `Querido hijo, gracias por tu confianza y por abrir tu corazón. He escuchado tus palabras con atención y sin juicio.\n\n` +
       `${consejo}\n\n` +
-      `Como penitencia, te pido que hagas lo siguiente: ${penitencia}\n\n` +
+      `Como penitencia, te pido que ${penitencia.toLowerCase()}\n\n` +
       `Cierra los ojos un momento y respira profundo. Imagina que dejas caer una carga pesada que ya no necesitas llevar.\n\n` +
       `Ego te absolvo de tus pecados. Ve en paz.`;
   } else {
@@ -76,11 +96,9 @@ function confess(message) {
       `Ego te absolvo de tus pecados. Ve en paz.`;
   }
 
-  return new Promise(resolve => {
-    setTimeout(() => resolve({
-      reply, absolucion: true, efecto, sins, penitencia,
-    }), 1300 + Math.random() * 700);
-  });
+  return new Promise(resolve =>
+    setTimeout(() => resolve({ reply, absolucion: true, efecto, sins, penitencia }), 900 + Math.random() * 400)
+  );
 }
 
 const KEY = 'cv.history';
